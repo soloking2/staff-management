@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { Staff } from './staff/staff.model';
-import { catchError } from 'rxjs/operators';
+import { catchError, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 
 @Injectable({
@@ -22,7 +22,10 @@ export class StaffService {
   }
 
   getStaff(): Observable<Staff[]> {
-    return this.http.get<Staff[]>(this.API);
+    return this.http.get<Staff[]>(this.API).pipe(
+      tap(data => console.log(data))
+    ).pipe(
+      catchError(this.handleError<Staff[]>('getStaff')));
   }
 
   private handleError<T>(operation = 'operation', result?: T) {
